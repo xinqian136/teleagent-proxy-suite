@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const png = fs.readFileSync('C:/Users/Administrator/AppData/Local/Temp/test-image.png');
+const png = fs.readFileSync('/c/Users/Administrator/WorkBuddy/2026-11-18-10-35-09/teleagent-proxy-v3/scripts/test-image.png');
 
 const srv = http.createServer((q, s) => {
   s.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': png.length });
