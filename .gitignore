@@ -23,3 +23,7 @@ accounts.json
 Thumbs.db
 *.swp
 *~
+
+# ===== 一键脚本产物 =====
+account.bundle
+客户端配置.txt

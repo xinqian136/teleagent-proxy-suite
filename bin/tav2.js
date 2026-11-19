@@ -152,6 +152,19 @@ commands.import = async (args, cfg) => {
   });
   console.log(C.bold('\n导入账号'));
   console.log(C.green(`✓ 新增 ${r.added.length} 个，更新 ${r.updated.length} 个`));
+
+  // 账号包里的渠道密钥 → 自动落地到 config，目标机零配置
+  if (r.channelKey) {
+    const ckPath = path.join(ROOT, 'config', 'channel-key.txt');
+    try {
+      fs.mkdirSync(path.join(ROOT, 'config'), { recursive: true });
+      fs.writeFileSync(ckPath, r.channelKey, 'utf8');
+      console.log(C.green('✓ 渠道密钥已自动配置'));
+    } catch (e) {
+      console.log(C.yellow(`! 渠道密钥写入失败：${e.message}`));
+    }
+  }
+
   for (const e of r.errors || []) console.log(C.yellow(`! ${e.message}`));
   console.log('');
   printAccounts(store.list());
@@ -160,21 +173,27 @@ commands.import = async (args, cfg) => {
 
 commands.export = async (args, cfg) => {
   const format = (args.format || 'bundle').toLowerCase();
-  const out = args.out ? path.resolve(args.out) : path.join(ROOT, 'data', `accounts.${format === 'bundle' ? 'bundle' : format}`);
+  const out = args.out ? path.resolve(args.out) : path.join(ROOT, 'data', `账号包.${format === 'bundle' ? 'bundle' : format}`);
   const store = openStore(args, cfg);
   const records = store.list();
   if (!records.length) {
-    console.log(C.yellow('没有可导出的账号。先运行 `tav2 scan` 或 `tav2 import`。'));
+    console.log(C.yellow('没有可导出的账号。先运行 `tav2 scan` 扫描本机，或导入已有账号包。'));
     return;
   }
+  // 渠道密钥一起打包 → 目标机零配置
+  const ck = resolveChannelKey({ configDir: path.join(ROOT, 'config'), dataDir: dataDir(args) });
   const r = exportAccounts(records, {
     format,
     outPath: out,
     password: args.password || process.env.TAV2_BUNDLE_PASSWORD || null,
+    channelKey: ck.key,
   });
   console.log(C.bold('\n导出账号'));
   console.log(C.green(`✓ ${r.count} 个账号 → ${out}`));
   if (format === 'bundle') {
+    console.log(ck.key
+      ? C.dim('  已包含渠道密钥，目标机无需再配置')
+      : C.dim('  未找到渠道密钥，目标机需自行配置'));
     console.log(r.encrypted
       ? C.dim('  已用口令加密（导入时需提供相同口令）')
       : C.yellow('  ⚠ 未加密 —— 这个文件等同于账号密码，请妥善保管'));
@@ -340,24 +359,53 @@ commands.serve = async (args, cfg) => {
 
   const port = cfg.port || 8792;
   const host = cfg.host || '127.0.0.1';
-  await new Promise((resolve, reject) => {
-    server.once('error', reject);
-    server.listen(port, host, resolve);
-  });
+  try {
+    await new Promise((resolve, reject) => {
+      server.once('error', reject);
+      server.listen(port, host, resolve);
+    });
+  } catch (e) {
+    if (e.code === 'EADDRINUSE') {
+      console.log('');
+      console.log(C.yellow(`✗ 端口 ${port} 已被占用`));
+      console.log('');
+      console.log('  可能是服务已经在跑了。检查一下：');
+      console.log(`    curl http://${host}:${port}/health`);
+      console.log('');
+      console.log('  想换端口：加 --port 参数，例如 --port 8793');
+      console.log('  想停掉旧的：schtasks /End /TN "TeleAgent Proxy V2"');
+      console.log('');
+      process.exit(1);
+    }
+    throw e;
+  }
 
   refresher.start();
   const s = pool.summary();
+  const baseUrl = `http://${host}:${port}/v1`;
+
+  // 自动生成客户端配置并复制到剪贴板
+  let cfgFile = null;
+  try {
+    const { writeConfigFile } = require(path.join(ROOT, 'lib', 'proxy', 'client-config'));
+    cfgFile = writeConfigFile(ROOT, { baseUrl, apiKey: cfg.apiKey, model: 'chat-flagship' }).path;
+  } catch (_) {}
+
   console.log('');
-  console.log(C.green(`✓ 反代已启动  http://${host}:${port}/v1`));
-  console.log(`  账号    : ${s.usable} / ${s.total} 可用`);
-  console.log(`  设备指纹: deviceId=${s.deviceId}  installId=${s.installId.slice(0, 8)}…`);
-  console.log(`  API Key : ${cfg.apiKey}`);
-  console.log(`  日志    : ${path.join(dataDir(args), 'tav2.log')}`);
+  console.log(C.green(`✓ 反代已启动`));
   console.log('');
-  console.log(C.dim('  客户端配置:'));
-  console.log(C.dim(`    base_url = http://${host}:${port}/v1`));
-  console.log(C.dim(`    api_key  = ${cfg.apiKey}`));
-  console.log(C.dim(`    model    = chat-flagship`));
+  console.log(C.bold('  在你的 AI 客户端里填这三行：'));
+  console.log('');
+  console.log(`    Base URL : ${C.cyan(baseUrl)}`);
+  console.log(`    API Key  : ${C.cyan(cfg.apiKey)}`);
+  console.log(`    Model    : ${C.cyan('chat-flagship')}`);
+  console.log('');
+  console.log(C.dim(`  完整配置（Cherry Studio / Cline / Cursor 各自怎么填）：`));
+  console.log(C.dim(`    ${cfgFile || '(生成失败)'}`));
+  console.log('');
+  console.log(C.dim(`  账号 ${s.usable}/${s.total} 可用`));
+  console.log(C.dim(`  设备指纹 ${s.deviceId}`));
+  console.log(C.dim(`  日志 ${path.join(dataDir(args), 'tav2.log')}`));
   console.log('');
   console.log(C.dim('  Ctrl+C 停止'));
   console.log('');
