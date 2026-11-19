@@ -1,0 +1,25 @@
+# ===== 运行时数据（绝不能提交）=====
+data/
+*.vault
+*.vault.tmp
+*.vault.lock
+*.db
+*.db-wal
+*.db-shm
+*.log
+local-key
+key.wrap
+channel-key.txt
+*.bundle
+
+# ===== 导出产物 =====
+*.xlsx
+accounts.json
+
+# ===== 编辑器 =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*~

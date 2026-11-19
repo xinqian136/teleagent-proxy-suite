@@ -1,0 +1,15 @@
+{
+  "port": 8792,
+  "host": "127.0.0.1",
+  "apiKey": "teleagent-local",
+  "storage": "json",
+  "appVersion": "3.1.0",
+  "refresher": {
+    "intervalMinutes": 360,
+    "aheadHours": 24,
+    "maxRetries": 3
+  },
+  "gateway": {
+    "timeoutMs": 300000
+  }
+}
