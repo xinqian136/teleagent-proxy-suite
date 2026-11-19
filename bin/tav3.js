@@ -117,8 +117,11 @@ async function main() {
   console.log(C.dim(`  API Key ：${settings.get('proxy.apiKey')}`));
   console.log('');
 
-  // 自动起反代
-  if (settings.get('proxy.autoStart')) {
+  // 自动起反代（除非之前被暂停过）
+  if (settings.get('proxy.paused')) {
+    console.log(C.yellow('  ⏸ 反代处于暂停状态，未自动启动'));
+    console.log(C.dim('    在网页「反代」页点「恢复」即可'));
+  } else if (settings.get('proxy.autoStart')) {
     const r = await manager.start();
     if (r.ok) {
       console.log(C.green('  ✓ 反代已自动启动'));

@@ -140,7 +140,25 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await sleep(1200);
 
   // 12. 对话测试
-  console.log('\n6. 其它');
+  console.log('\n6. 暂停与恢复');
+  r = await req('/api/admin/proxy/pause', 'POST', {});
+  const pz = JSON.parse(r.body);
+  pz.paused && pz.proxy.state === 'stopped' ? ok('暂停 → 反代停止，paused=true') : bad('暂停失败：' + r.body.slice(0, 100));
+
+  r = await req('/api/admin/settings');
+  JSON.parse(r.body).settings.proxy.paused ? ok('暂停状态已持久化到设置') : bad('暂停没持久化');
+
+  const stillUp = (await req('/api/admin/overview')).code === 200;
+  stillUp ? ok('暂停后后台仍可访问（能点恢复）') : bad('暂停后后台也挂了');
+
+  r = await req('/api/admin/proxy/resume', 'POST', {});
+  const rs = JSON.parse(r.body);
+  rs.proxy.state === 'running' && !rs.paused ? ok('恢复 → 反代运行，paused 清除') : bad('恢复失败：' + r.body.slice(0, 100));
+
+  r = await req('/api/admin/settings');
+  JSON.parse(r.body).settings.proxy.paused === false ? ok('paused 已清除') : bad('paused 没清除');
+
+  console.log('\n7. 其它');
   r = await req('/api/admin/test', 'POST', { message: '用一句话说你是谁', model: 'chat-flash' });
   r.code === 200 ? ok('对话测试 → 200') : bad('对话测试失败：' + r.body.slice(0, 120));
 

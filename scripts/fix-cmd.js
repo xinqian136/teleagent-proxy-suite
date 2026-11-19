@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const CMD_FILES = ['启动后台.cmd', 'scripts/install-task.cmd'];
+const CMD_FILES = ['启动后台.cmd', '暂停后台.cmd', 'scripts/install-task.cmd'];
 
 for (const rel of CMD_FILES) {
   const p = path.join(ROOT, rel);

@@ -16,6 +16,20 @@ if "%NODE%"=="" if exist "%LOCALAPPDATA%\Programs\nodejs\node.exe" set "NODE=%LO
 
 if "%NODE%"=="" goto :nonode
 
+REM ---- if the auto-start task exists, use it (runs detached in background) ----
+schtasks /Query /TN "TeleAgent Proxy V3" >nul 2>&1
+if not errorlevel 1 (
+  schtasks /Run /TN "TeleAgent Proxy V3" >nul 2>&1
+  echo.
+  echo   Started via the auto-start task.
+  echo   Open: http://127.0.0.1:8795/
+  echo.
+  start "" "http://127.0.0.1:8795/"
+  endlocal
+  goto :eof
+)
+
+REM ---- otherwise run it in this window ----
 "%NODE%" "%~dp0bin\tav3.js" %*
 goto :done
 
@@ -26,7 +40,6 @@ echo.
 echo   Please install Node.js 18 or newer:  https://nodejs.org
 echo   (or download the portable zip and put node.exe next to this file)
 echo.
-timeout /t 10 >nul
 exit /b 1
 
 :done
@@ -34,6 +47,5 @@ if errorlevel 1 (
   echo.
   echo   [X] Failed to start.
   echo.
-  timeout /t 10 >nul
 )
 endlocal
