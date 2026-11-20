@@ -11,7 +11,11 @@ cd /d "%~dp0.."
 set "TASKNAME=TeleAgent Proxy V4"
 
 set "NODE="
+REM 1) PATH
 where node >nul 2>nul && set "NODE=node"
+REM 2) TeleAgent bundled runtime
+if "%NODE%"=="" if exist "%USERPROFILE%\.local\share\TeleAgent\runtimes\node\node.exe" set "NODE=%USERPROFILE%\.local\share\TeleAgent\runtimes\node\node.exe"
+REM 3) standard installs
 if "%NODE%"=="" if exist "%ProgramFiles%\nodejs\node.exe" set "NODE=%ProgramFiles%\nodejs\node.exe"
 if "%NODE%"=="" if exist "%LOCALAPPDATA%\Programs\nodejs\node.exe" set "NODE=%LOCALAPPDATA%\Programs\nodejs\node.exe"
 if "%NODE%"=="" goto :nonode
@@ -33,7 +37,7 @@ schtasks /Create /TN "%TASKNAME%" /TR "\"%NODEABS%\" \"%~dp0..\bin\tav3.js\" --n
 if errorlevel 1 (
   echo.
   echo   [X] Failed to create the task.
-  echo       You can still start it manually: scripts\start.cmd
+  echo       You can still start it manually: 启动后台.cmd
   timeout /t 10 >nul
   exit /b 1
 )
@@ -49,6 +53,10 @@ endlocal
 goto :eof
 
 :nonode
+echo.
 echo   [X] Node.js not found.
+echo.
+echo   Install Node.js 18+:  https://nodejs.org
+echo.
 timeout /t 10 >nul
 exit /b 1

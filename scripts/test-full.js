@@ -246,6 +246,39 @@ const TOOLS = [{
     ? ok('响应字段完整（request_id/usage/reasoning_content）')
     : bad('响应字段不完整');
 
+  // ---- 6. 模型别名 chat-flagshipAuto ----
+  console.log('\n6. 模型别名');
+  const models = await new Promise((res) => {
+    const q = http.request({ host: '127.0.0.1', port: PORT, path: '/v1/models', method: 'GET', headers: { Authorization: 'Bearer ' + KEY } }, (resp) => {
+      let t = ''; resp.on('data', (c) => t += c);
+      resp.on('end', () => { try { res(JSON.parse(t).data.map((m) => m.id)); } catch (_) { res([]); } });
+    });
+    q.on('error', () => res([]));
+    q.end();
+  });
+  models.includes('chat-flagshipAuto') ? ok('/v1/models 含 chat-flagshipAuto') : bad('/v1/models 没有别名模型');
+
+  if (small) {
+    r = await post({ model: 'chat-flagshipAuto', messages: [{ role: 'user', content: [
+      { type: 'text', text: '这图里是什么？一句话' },
+      { type: 'image_url', image_url: { url: 'data:' + mimeOf(small.fp) + ';base64,' + b64Of(small.fp) } },
+    ] }] });
+    if (r.code === 200) {
+      const j = JSON.parse(r.body);
+      const txt = String(j.choices[0].message.content);
+      const sees = /益达|口香糖|瓶|菊|包装/.test(txt);
+      (j.model && j.model !== 'chat-flagshipAuto')
+        ? ok('chat-flagshipAuto 带图 → 实际模型 ' + j.model + (sees ? '，✓ 看到图' : '，✗ 看不到图'))
+        : bad('别名没生效，模型=' + j.model);
+      if (!sees) fail++;
+    } else bad('别名带图 → ' + r.code);
+  }
+
+  r = await post({ model: 'chat-flagshipAuto', messages: [{ role: 'user', content: '说OK' }] });
+  (r.code === 200 && JSON.parse(r.body).model === 'chat-flagship')
+    ? ok('chat-flagshipAuto 纯文本 → chat-flagship')
+    : bad('别名纯文本 → 模型=' + (r.code === 200 ? JSON.parse(r.body).model : r.code));
+
   console.log('\n' + '─'.repeat(46));
   console.log('  通过 ' + pass + ' 项，失败 ' + fail + ' 项');
   console.log('─'.repeat(46) + '\n');

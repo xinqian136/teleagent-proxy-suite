@@ -135,8 +135,17 @@
             <label class="fld"><span>API Key</span><input id="setKey" class="inp"></label>
             <label class="fld chk"><input id="setAuto" type="checkbox"><span>随后台自动启动</span></label>
             <label class="fld chk"><input id="setVision" type="checkbox"><span>模型不支持图片时自动降级到 chat-flash</span></label>
+            <label class="fld"><span>带图时用哪个模型</span>
+              <select id="setVisionModel" class="inp">
+                <option value="chat-flash">chat-flash（推荐）</option>
+                <option value="chat-lite">chat-lite</option>
+                <option value="chat-pro">chat-pro</option>
+                <option value="chat-flagship">chat-flagship（旗舰，可能不支持视觉）</option>
+              </select>
+            </label>
             <p class="hint">改端口或 API Key 会自动重启反代使配置生效。</p>
             <p class="hint">网关的模型路由会变：有时 chat-flagship 被路由到只支持文本的后端，带图请求就报 400。开启后遇到这种错误会自动换 chat-flash 重试。</p>
+            <p class="hint">模型别名 <b>chat-flagshipAuto</b>：带图时用上面选的模型，纯文本始终用 chat-flagship。在客户端里选它就不用操心网关当天怎么路由。</p>
           </div>
         </div>
         <div class="card">
