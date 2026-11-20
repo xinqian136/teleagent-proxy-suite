@@ -12,6 +12,7 @@ set "TASKNAME=TeleAgent Proxy V3"
 
 set "NODE="
 where node >nul 2>nul && set "NODE=node"
+if "%NODE%"=="" if exist "%USERPROFILE%\.local\share\TeleAgent\runtimes\node\node.exe" set "NODE=%USERPROFILE%\.local\share\TeleAgent\runtimes\node\node.exe"
 if "%NODE%"=="" if exist "%ProgramFiles%\nodejs\node.exe" set "NODE=%ProgramFiles%\nodejs\node.exe"
 if "%NODE%"=="" if exist "%LOCALAPPDATA%\Programs\nodejs\node.exe" set "NODE=%LOCALAPPDATA%\Programs\nodejs\node.exe"
 if "%NODE%"=="" goto :nonode
