@@ -1,0 +1,295 @@
+{
+ "catalog": [
+  {
+   "group": "预置模型",
+   "id": "chat-pro",
+   "name": "智能",
+   "context": 400000,
+   "output": 65536,
+   "desc": "根据任务复杂度智能匹配，适合日常办公等大多数场景",
+   "credit": "0.6",
+   "default": true,
+   "toolStream": true,
+   "tags": [
+    "推荐"
+   ]
+  },
+  {
+   "group": "预置模型",
+   "id": "chat-flagship",
+   "name": "旗舰",
+   "context": 400000,
+   "output": 65536,
+   "desc": "能力更强，适合制作 PPT、代码开发等复杂场景",
+   "credit": "1.0",
+   "toolStream": true,
+   "tags": []
+  },
+  {
+   "group": "预置模型",
+   "id": "chat-flash",
+   "name": "极速",
+   "context": 400000,
+   "output": 65536,
+   "desc": "响应更快，适合问答、总结、改写等轻量场景",
+   "credit": "0.2",
+   "toolStream": true,
+   "tags": []
+  }
+ ],
+ "live": {
+  "chat-flagship": {
+   "id": "chat-flagship",
+   "providerID": "NewApi",
+   "name": "旗舰",
+   "api": {
+    "id": "chat-flagship",
+    "url": "https://agent.teleai.com.cn/superCowork/sapi/api/v1",
+    "npm": "@ai-sdk/openai-compatible"
+   },
+   "capabilities": {
+    "temperature": false,
+    "reasoning": false,
+    "attachment": false,
+    "toolcall": true,
+    "input": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "output": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "interleaved": false
+   },
+   "cost": {
+    "input": 0,
+    "output": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   },
+   "limit": {
+    "context": 1000000,
+    "input": 1000000,
+    "output": 65536
+   },
+   "status": "active",
+   "release_date": "",
+   "options": {
+    "tool_stream": true,
+    "useModelOutputLimit": true
+   },
+   "safeContextLimit": 934465
+  },
+  "chat-flash": {
+   "id": "chat-flash",
+   "providerID": "NewApi",
+   "name": "极速",
+   "api": {
+    "id": "chat-flash",
+    "url": "https://agent.teleai.com.cn/superCowork/sapi/api/v1",
+    "npm": "@ai-sdk/openai-compatible"
+   },
+   "capabilities": {
+    "temperature": false,
+    "reasoning": false,
+    "attachment": false,
+    "toolcall": true,
+    "input": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "output": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "interleaved": false
+   },
+   "cost": {
+    "input": 0,
+    "output": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   },
+   "limit": {
+    "context": 1000000,
+    "input": 1000000,
+    "output": 65536
+   },
+   "status": "active",
+   "release_date": "",
+   "options": {
+    "tool_stream": true,
+    "useModelOutputLimit": true
+   },
+   "safeContextLimit": 934465
+  },
+  "chat-lite": {
+   "id": "chat-lite",
+   "providerID": "NewApi",
+   "name": "轻量",
+   "api": {
+    "id": "chat-lite",
+    "url": "https://agent.teleai.com.cn/superCowork/sapi/api/v1",
+    "npm": "@ai-sdk/openai-compatible"
+   },
+   "capabilities": {
+    "temperature": false,
+    "reasoning": false,
+    "attachment": false,
+    "toolcall": true,
+    "input": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "output": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "interleaved": false
+   },
+   "cost": {
+    "input": 0,
+    "output": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   },
+   "limit": {
+    "context": 100000,
+    "output": 16384
+   },
+   "status": "active",
+   "release_date": "",
+   "options": {
+    "tool_stream": true,
+    "useModelOutputLimit": true
+   },
+   "safeContextLimit": 92350
+  },
+  "chat-nano": {
+   "id": "chat-nano",
+   "providerID": "NewApi",
+   "name": "轻速",
+   "api": {
+    "id": "chat-nano",
+    "url": "https://agent.teleai.com.cn/superCowork/sapi/api/v1",
+    "npm": "@ai-sdk/openai-compatible"
+   },
+   "capabilities": {
+    "temperature": false,
+    "reasoning": false,
+    "attachment": false,
+    "toolcall": true,
+    "input": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "output": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "interleaved": false
+   },
+   "cost": {
+    "input": 0,
+    "output": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   },
+   "limit": {
+    "context": 100000,
+    "output": 16384
+   },
+   "status": "active",
+   "release_date": "",
+   "options": {
+    "tool_stream": true,
+    "useModelOutputLimit": true
+   },
+   "safeContextLimit": 92350
+  },
+  "chat-pro": {
+   "id": "chat-pro",
+   "providerID": "NewApi",
+   "name": "智能",
+   "api": {
+    "id": "chat-pro",
+    "url": "https://agent.teleai.com.cn/superCowork/sapi/api/v1",
+    "npm": "@ai-sdk/openai-compatible"
+   },
+   "capabilities": {
+    "temperature": false,
+    "reasoning": false,
+    "attachment": false,
+    "toolcall": true,
+    "input": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "output": {
+     "text": true,
+     "audio": false,
+     "image": false,
+     "video": false,
+     "pdf": false
+    },
+    "interleaved": false
+   },
+   "cost": {
+    "input": 0,
+    "output": 0,
+    "cache": {
+     "read": 0,
+     "write": 0
+    }
+   },
+   "limit": {
+    "context": 1000000,
+    "input": 1000000,
+    "output": 65536
+   },
+   "status": "active",
+   "release_date": "",
+   "options": {
+    "tool_stream": true,
+    "useModelOutputLimit": true
+   },
+   "safeContextLimit": 934465
+  }
+ }
+}

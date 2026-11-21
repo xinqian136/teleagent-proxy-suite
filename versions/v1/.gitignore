@@ -1,0 +1,40 @@
+# ===== 凭据（绝对不能提交）=====
+scripts/token.key          # safeStorage AES key（DPAPI 解出）
+scripts/session.key        # TeleAgent 内核 sessionKey
+*.key
+*.pem
+*.pfx
+
+# ===== 运行时产物 =====
+scripts/*.log
+scripts/shim-*.log
+scripts/shim-launch.log
+scripts/session.key
+node_modules/
+
+# ===== 逆向工具链（体积大，本地重建即可）=====
+# tools/ 约 636MB：REA + node 24.22.1 + JDK 21 + Go 工具链
+# 需要时按 HOW-IT-WORKS.md 里的说明重新下载
+# 注意用 /tools/ 锚定顶层，否则会误伤 _re/tools/（那是要提交的研究脚本）
+/tools/
+
+# ===== 逆向工具链编译产物 =====
+_re/tools/gofuncs/gofuncs.exe
+_re/tools/gofuncs/gofuncs
+_re/**/*.exe
+_re/**/*.json
+_re/**/*.txt
+_re/**/*.log
+
+# ===== 编辑器 / 系统 =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# ===== 本地私有配置（可选）=====
+.env
+.env.local
+*.local.json
