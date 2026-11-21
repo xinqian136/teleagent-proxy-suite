@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeleAgent 反代 · 管理后台</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="logo">TA</div>
+      <div>
+        <div class="brand-t">TeleAgent 反代</div>
+        <div class="brand-s" id="brandSub">管理后台</div>
+      </div>
+    </div>
+    <nav id="nav">
+      <button class="nav-item active" data-page="overview"><span class="ico">◈</span>概览</button>
+      <button class="nav-item" data-page="accounts"><span class="ico">☰</span>账号</button>
+      <button class="nav-item" data-page="proxy"><span class="ico">⇄</span>反代</button>
+      <button class="nav-item" data-page="settings"><span class="ico">⚙</span>设置</button>
+      <button class="nav-item" data-page="logs"><span class="ico">≡</span>日志</button>
+    </nav>
+    <div class="side-foot">
+      <div class="mini" id="sideStatus">连接中…</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- 概览 -->
+    <section class="page active" id="page-overview">
+      <h1>概览</h1>
+      <div class="cards" id="ovCards"></div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-h">客户端配置</div>
+          <div class="card-b">
+            <p class="hint">把这三行填进你的 AI 客户端（Cherry Studio / Cline / Cursor 等）</p>
+            <div class="cfgbox" id="ovConfig"></div>
+            <button class="btn small" id="btnCopyCfg">复制配置</button>
+            <button class="btn small ghost" id="btnClientCfg">各客户端填法</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h">快速操作</div>
+          <div class="card-b">
+            <div class="quick">
+              <button class="btn" id="btnScan">扫描本机账号</button>
+              <button class="btn ghost" id="btnStartProxy">启动反代</button>
+              <button class="btn ghost" id="btnStopProxy">停止反代</button>
+            </div>
+            <div class="hint" id="ovHint"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 账号 -->
+    <section class="page" id="page-accounts">
+      <div class="page-h">
+        <h1>账号</h1>
+        <div class="acts">
+          <button class="btn" id="btnScan2">扫描本机</button>
+          <button class="btn ghost" id="btnImport">导入</button>
+          <button class="btn ghost" id="btnExport">导出</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tbl-wrap">
+          <table class="tbl acct" id="accTbl">
+            <thead>
+              <tr>
+                <th>账号</th><th>tenant</th><th>状态</th>
+                <th>有效期</th><th>绝对期限</th><th>备注</th><th class="ta-r">操作</th>
+              </tr>
+            </thead>
+            <tbody id="accBody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="accEmpty" hidden>还没有账号。点「扫描本机」自动导入，或用「导入」功能。</div>
+      </div>
+    </section>
+
+    <!-- 反代 -->
+    <section class="page" id="page-proxy">
+      <div class="page-h">
+        <h1>反代服务</h1>
+        <div class="acts">
+          <button class="btn ghost" id="btnPauseProxy">暂停</button>
+          <button class="btn ghost" id="btnResumeProxy">恢复</button>
+        </div>
+      </div>
+      <div class="cards" id="pxCards"></div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-h">对话测试</div>
+          <div class="card-b">
+            <div class="row">
+              <input id="testModel" value="chat-flash" placeholder="模型" class="inp w-s">
+              <input id="testMsg" value="用一句话说你是谁" placeholder="消息" class="inp grow">
+              <button class="btn" id="btnTest">发送</button>
+            </div>
+            <pre class="out" id="testOut">（还没测过）</pre>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h">端点</div>
+          <div class="card-b">
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <tbody>
+                  <tr><td class="dim">OpenAI</td><td><code id="epOpenai">-</code></td></tr>
+                  <tr><td class="dim">Anthropic</td><td><code id="epAnthropic">-</code></td></tr>
+                  <tr><td class="dim">健康检查</td><td><code id="epHealth">-</code></td></tr>
+                  <tr><td class="dim">模型列表</td><td><code id="epModels">-</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 设置 -->
+    <section class="page" id="page-settings">
+      <h1>设置</h1>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-h">反代服务</div>
+          <div class="card-b">
+            <label class="fld"><span>监听端口</span><input id="setPort" class="inp" type="number" min="1" max="65535"></label>
+            <label class="fld"><span>监听地址</span><input id="setHost" class="inp"></label>
+            <label class="fld"><span>API Key</span><input id="setKey" class="inp"></label>
+            <label class="fld chk"><input id="setAuto" type="checkbox"><span>随后台自动启动</span></label>
+            <label class="fld chk"><input id="setVision" type="checkbox"><span>模型不支持图片时自动降级到 chat-flash</span></label>
+            <label class="fld"><span>带图时用哪个模型</span>
+              <select id="setVisionModel" class="inp">
+                <option value="chat-flash">chat-flash（推荐）</option>
+                <option value="chat-lite">chat-lite</option>
+                <option value="chat-pro">chat-pro</option>
+                <option value="chat-flagship">chat-flagship（旗舰，可能不支持视觉）</option>
+              </select>
+            </label>
+            <p class="hint">改端口或 API Key 会自动重启反代使配置生效。</p>
+            <p class="hint">网关的模型路由会变：有时 chat-flagship 被路由到只支持文本的后端，带图请求就报 400。开启后遇到这种错误会自动换 chat-flash 重试。</p>
+            <p class="hint">模型别名 <b>chat-flagshipAuto</b>：带图时用上面选的模型，纯文本始终用 chat-flagship。在客户端里选它就不用操心网关当天怎么路由。</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h">存储与续期</div>
+          <div class="card-b">
+            <label class="fld"><span>存储类型</span>
+              <select id="setStore" class="inp">
+                <option value="json">加密 JSON（默认，零依赖）</option>
+                <option value="sqlite">SQLite（需 Node 22+）</option>
+              </select>
+            </label>
+            <label class="fld"><span>续期检查间隔（分钟）</span><input id="setInterval" class="inp" type="number" min="10"></label>
+            <label class="fld"><span>提前多久续期（小时）</span><input id="setAhead" class="inp" type="number" min="1"></label>
+            <p class="hint">存储类型改动需重启后台才生效。</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">管理后台</div>
+        <div class="card-b">
+          <div class="row">
+            <button class="btn" id="btnSave">保存设置</button>
+            <button class="btn ghost" id="btnReset">恢复默认</button>
+          </div>
+          <p class="hint" id="setHint"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 日志 -->
+    <section class="page" id="page-logs">
+      <div class="page-h">
+        <h1>日志</h1>
+        <div class="acts">
+          <label class="chk inline"><input id="logTab" type="checkbox"><span>看请求记录</span></label>
+          <button class="btn ghost small" id="btnRefreshLog">刷新</button>
+          <label class="chk inline"><input id="autoLog" type="checkbox" checked><span>自动刷新</span></label>
+        </div>
+      </div>
+      <div class="card">
+        <pre class="out log" id="logOut">（暂无日志）</pre>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- 弹窗 -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-box">
+    <div class="modal-h"><span id="mTitle">标题</span><button class="x" id="mClose">×</button></div>
+    <div class="modal-b" id="mBody"></div>
+    <div class="modal-f" id="mFoot"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

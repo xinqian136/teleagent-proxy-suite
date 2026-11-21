@@ -1,0 +1,20 @@
+{
+  "name": "teleagent-proxy-v4",
+  "version": "4.0.0",
+  "description": "TeleAgent 反代 v4 —— Web 管理后台，账号管理与反代配置全在网页上",
+  "bin": {
+    "tav3": "bin/tav3.js"
+  },
+  "main": "bin/tav3.js",
+  "scripts": {
+    "start": "node bin/tav3.js",
+    "test": "node scripts/test-web.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "license": "MIT",
+  "private": true
+}

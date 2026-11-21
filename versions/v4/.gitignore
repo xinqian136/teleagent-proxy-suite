@@ -1,0 +1,30 @@
+# ===== 运行时数据 =====
+data/
+*.vault
+*.vault.tmp
+*.vault.lock
+*.db
+*.db-wal
+*.db-shm
+*.log
+*.crash.log
+local-key
+key.wrap
+channel-key.txt
+
+# ===== 导出产物 =====
+*.bundle
+*.xlsx
+accounts.json
+客户端配置.txt
+
+# ===== 编辑器 =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# ===== 运行时设置（含自定义 API Key）=====
+config/settings.json
