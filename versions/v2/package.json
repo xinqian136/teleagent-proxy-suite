@@ -1,0 +1,22 @@
+{
+  "name": "teleagent-proxy-v2",
+  "version": "2.0.0",
+  "description": "TeleAgent 反代 v2 —— 账号管理 + 反代服务，模块化、可打包迁移、凭证自续期",
+  "bin": {
+    "tav2": "bin/tav2.js"
+  },
+  "main": "bin/tav2.js",
+  "scripts": {
+    "start": "node bin/tav2.js serve",
+    "scan": "node bin/tav2.js scan",
+    "doctor": "node bin/tav2.js doctor",
+    "test": "node bin/tav2.js test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "license": "MIT",
+  "private": true
+}
